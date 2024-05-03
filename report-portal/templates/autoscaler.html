@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header with animation and refresh button -->
+    <div class="heading-animation mb-4">
+        <h1 class="text-center">
+            <i class="fas fa-chart-line"></i> Autoscaler E2E Report
+        </h1>
+        <div class="d-flex justify-content-end" style="float: right;">
+            <button class="btn btn-lg btn-primary refresh-btn" onclick="window.location.reload()" >
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <!-- AGENT with blue heading -->
+        <div class="col-md-4">
+            {% if agent_runs %}
+            <h3 class="status-heading" style="color: #6c757d;">AGENT</h3>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover text-center">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Test Group ID</th>
+                            <th>Version</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for run in agent_runs %}
+                        <tr>
+                            <!-- Make the whole cell clickable -->
+                            <td>
+                                <a href="{{ url_for('test_results', test_group_id=run['id']) }}" class="clickable-link">
+                                    {{ run['id'] }}
+                                </a>
+                            </td>
+                            <td>{{ run['name'] }}</td>
+                            <td class="status-cell {% if run['test_result'] == 'PASS' %} text-success 
+                                        {% elif run['test_result'] == 'FAIL' %} text-danger 
+                                        {% elif run['test_result'] == 'PENDING' %} text-warning 
+                                        {% else %} text-secondary 
+                                    {% endif %}">
+                                {{ run['test_result'] }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-center text-warning">No data found for AGENT.</p>
+            {% endif %}
+        </div>
+
+        <!-- AGENT_LIGHT_PLAN with orange heading -->
+        <div class="col-md-4">
+            {% if agent_light_runs %}
+            <h3 class="status-heading" style="color: #6c757d;">AGENT LIGHT PLAN</h3>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover text-center">
+                    <thead class="bg-info text-white">
+                        <tr>
+                            <th>Test Group ID</th>
+                            <th>Version</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for run in agent_light_runs %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('test_results', test_group_id=run['id']) }}" class="clickable-link">
+                                    {{ run['id'] }}
+                                </a>
+                            </td>
+                            <td>{{ run['name'] }}</td>
+                            <td class="status-cell {% if run['test_result'] == 'PASS' %} text-success 
+                                        {% elif run['test_result'] == 'FAIL' %} text-danger 
+                                        {% elif run['test_result'] == 'PENDING' %} text-warning 
+                                        {% else %} text-secondary 
+                                    {% endif %}">
+                                {{ run['test_result'] }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-center text-warning">No data found for AGENT LIGHT PLAN.</p>
+            {% endif %}
+        </div>
+
+        <!-- EBS_ORCHESTRATOR with green heading -->
+        <div class="col-md-4">
+            {% if orchestrator_runs %}
+            <h3 class="status-heading" style="color: #6c757d;">EBS ORCHESTRATOR</h3>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover text-center">
+                    <thead class="bg-success text-white">
+                        <tr>
+                            <th>Test Group ID</th>
+                            <th>Version</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for run in orchestrator_runs %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('test_results', test_group_id=run['id']) }}" class="clickable-link">
+                                    {{ run['id'] }}
+                                </a>
+                            </td>
+                            <td>{{ run['name'] }}</td>
+                            <td class="status-cell {% if run['test_result'] == 'PASS' %} text-success 
+                                        {% elif run['test_result'] == 'FAIL' %} text-danger 
+                                        {% elif run['test_result'] == 'PENDING' %} text-warning 
+                                        {% else %} text-secondary 
+                                    {% endif %}">
+                                {{ run['test_result'] }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-center text-warning">No data found for EBS ORCHESTRATOR.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

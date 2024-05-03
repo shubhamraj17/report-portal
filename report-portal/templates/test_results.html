@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header with animation and refresh button -->
+    <div class="heading-animation mb-4 d-flex justify-content-between align-items-center">
+        <h1 class="text-center">
+            <i class="fas fa-chart-line"></i> Test Results for GroupId  {{ test_group_id }} 
+        </h1>
+        <div>
+            <button class="btn btn-lg btn-primary refresh-btn" onclick="window.location.reload()" style="float: right;">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- Table section -->
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered table-hover table-striped">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>Total Tests</th>
+                    <th>Tests Passed</th>
+                    <th>Tests Failed</th>
+                    <th>Tests Pending</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ passed + failed + pending }}</td>
+                    <td>{{ passed }}</td>
+                    <td>{{ failed }}</td>
+                    <td>{{ pending }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Failed Tests section -->
+    <div class="mt-4">
+        <h4 class="sub-header">Failed Tests</h4>
+        <div id="accordion">
+            {% for test in failed_tests %}
+            <div class="heading-animation mb-4 d-flex justify-content-between align-items-center">
+                <div class="card">
+                    <div class="card-header" id="heading{{ test.id }}">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed text-muted" data-toggle="collapse" data-target="#collapse{{ test.id }}" aria-expanded="false" aria-controls="collapse{{ test.id }}">
+                                test{{ test.id }} - {{ test.operation_name }}
+                            </button>
+                        </h5>
+                    </div>
+
+                    <div id="collapse{{ test.id }}" class="collapse" aria-labelledby="heading{{ test.id }}" data-parent="#accordion">
+                        <div class="card-body">
+                            <!-- Display formatted message -->
+                            <p style="text-align: left;">{{ test.message | safe }}</p>
+                            {% if test.meta %}
+                            <div class="small-section" style="height: 150px; overflow: auto;">
+                                <p><strong>Meta:</strong></p>
+                                <p style="text-align: left;">{{ test.meta | safe }}</p>
+                            </div>
+                            {% endif %}
+                            <!-- Print Cloud Provider Image ID -->
+                            {% if test.cloud_provider_image_id %}
+                            <div class="small-section" style="height: 80px; overflow: auto;">
+                                <p style="text-align: center;">
+                                    <strong>Cloud Provider Image ID:</strong> 
+                                    <a href="{{ url_for('test_history', cloud_provider_image_id=test.cloud_provider_image_id) }}">
+                                        {{ test.cloud_provider_image_id }}
+                                    </a>
+                                </p>
+                            </div>
+                            {% endif %}
+                            <!-- Print Cloud Platform -->
+                            {% if test.cloud_platform %}
+                            <div class="small-section" style="height: 80px; overflow: auto;">
+                                <p style="text-align: center;"><strong>Cloud Platform:</strong> {{ test.cloud_platform | safe }}</p>
+                            </div>
+                            {% endif %}
+                            <!-- Print OS Type -->
+                            {% if test.os_type %}
+                            <div class="small-section" style="height: 80px; overflow: auto;">
+                                <p style="text-align: center;"><strong>OS Type:</strong> {{ test.os_type | safe }}</p>
+                            </div>
+                            {% endif %}
+                            <!-- Print Instance ID -->
+                            {% if test.instance_id %}
+                            <div class="small-section" style="height: 80px; overflow: auto;">
+                                <p style="text-align: center;"><strong>Instance ID:</strong> {{ test.instance_id | safe }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var headers = document.querySelectorAll('.card-header');
+
+        headers.forEach(function (header) {
+            header.addEventListener('click', function () {
+                var collapse = this.nextElementSibling;
+
+                if (collapse.classList.contains('collapse')) {
+                    collapse.classList.toggle('in');
+                } else {
+                    collapse = this.parentNode.querySelector('.collapse');
+                    collapse.classList.toggle('in');
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

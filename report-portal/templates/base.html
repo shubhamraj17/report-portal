@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lucidity Report Portal</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Navigation styling */
+        nav {
+            display: flex;
+            align-items: flex-start; /* Align items to the top */
+        }
+        
+        nav h1 {
+            margin: 0;
+            padding: 0;
+            font-size: 1.5em;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            text-align: left; /* Align title to the left */
+            margin-right: 30px; /* Increase space between Lucidity and Home */
+            position: relative; /* Add position relative for absolute positioning */
+            display: inline-block; /* Ensure inline-block display */
+        }
+
+        nav h1:before {
+            content: ""; /* Add content for pseudo-element */
+            background-image: url('img/image.png'); /* Placeholder image */
+            background-size: contain; /* Set the background size to contain */
+            background-repeat: no-repeat; /* Prevent background image from repeating */
+            background-position: center; /* Center the background image */
+            width: 50px; /* Set the width of the logo */
+            height: 50px; /* Set the height of the logo */
+            position: absolute; /* Position the logo absolutely */
+            left: -60px; /* Adjust the left position of the logo */
+            top: 50%; /* Position the logo vertically in the middle */
+            transform: translateY(-50%); /* Adjust vertical alignment */
+        }
+
+        nav h1:hover {
+            color: #ff5722; /* Change color on hover */
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5); /* Add shadow effect on hover */
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex; /* Ensure inline list */
+        }
+
+        nav li {
+            margin-right: 10px; /* Add space between items */
+        }
+
+        nav li a {
+            text-decoration: none;
+            padding: 10px 30px;
+            background-color: #4CAF50; /* Green color */
+            color: white; /* Text color */
+            border: 1px solid #4CAF50;
+            border-radius: 10px; /* Rounded corners */
+            transition: all 0.3s ease; /* Smooth transitions */
+        }
+
+        /* Hover effect for buttons: color change, drop shadow, and slight scaling */
+        nav li a:hover {
+            background-color: #1d98b1; /* Darken on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Drop shadow */
+            transform: scale(1.05); /* Slight scaling */
+            cursor: pointer; /* Pointer cursor */
+        }
+
+        /* Content styling */
+        .content {
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar with title and buttons -->
+    <nav>
+        <h1>Lucidity</h1> <!-- Added a title to the nav -->
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('autoscaler') }}">Autoscaler</a></li>
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main content section -->
+    <div class="content">
+        {% block content %} {% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Lucidity Report Portal</h1>
+
+    <!-- Both graphs next to each other -->
+    <div class="row">
+        <!-- Pie Chart with number of test cases -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <canvas id="testCasesPieChart" class="chart-interactive"></canvas>
+            </div>
+            <div class="text-center mt-3 chart-label">
+                <p class="font-weight-bold">E2E Tests in Last 7 Days</p>
+            </div>
+        </div>
+
+        <!-- Histogram with number of test runs -->
+        <div class="col-md-6" style="width: 50%; float: right;">
+            <div class="chart-container">
+                <canvas id="testRunsHistogram" class="chart-interactive"></canvas>
+            </div>
+            <div class="text-center mt-3 chart-label">
+                <p class="font-weight-bold">E2E Test Runs in Last 7 Days</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Histogram with count of each service -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="chart-container">
+                <canvas id="serviceBarChart" class="chart-interactive"></canvas>
+            </div>
+            <div class="text-center mt-3 chart-label">
+                <p class="font-weight-bold">E2E Tests in each Service</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Fetch test cases data
+    fetch('/get_test_cases_stats')
+        .then(response => response.json())
+        .then(data => {
+            const casesPieCtx = document.getElementById('testCasesPieChart').getContext('2d');
+
+            // Data for the pie chart
+            const casesPieData = {
+                labels: ['Passed', 'Failed', 'In Progress'],
+                datasets: [{
+                    data: [data.PASSED, data.FAILED, data.IN_PROGRESS],
+                    backgroundColor: ['#28a745', '#dc3545', '#ffc107'],
+                }],
+            };
+
+            // Create a responsive pie chart with hover interaction
+            new Chart(casesPieCtx, {
+                type: 'pie',
+                data: casesPieData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            enabled: true,
+                        },
+                    },
+                },
+            });
+        })
+        .catch(error => console.error("Error fetching test cases stats:", error));
+
+    // Fetch test runs data
+    fetch('/get_test_runs_stats')
+        .then(response => response.json())
+        .then(data => {
+            const runsHistogramCtx = document.getElementById('testRunsHistogram').getContext('2d');
+
+            // Data for the histogram
+            const runsHistogramData = {
+                labels: ['Passed', 'Failed', 'Pending'],
+                datasets: [{
+                    label: 'Number of Test Runs',
+                    data: [data.PASSED, data.FAILED, data.PENDING],
+                    backgroundColor: ['#28a745', '#dc3545', '#6c757d'],
+                }],
+            };
+
+            // Create a responsive histogram with hover interaction
+            new Chart(runsHistogramCtx, {
+                type: 'bar',
+                data: runsHistogramData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                        },
+                        tooltip: {
+                            enabled: true,
+                        },
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+        })
+        .catch(error => console.error("Error fetching test runs stats:", error));
+
+    // Fetch service counts data
+    fetch('/get_service_counts')
+        .then(response => response.json())
+        .then(data => {
+            const serviceBarCtx = document.getElementById('serviceBarChart').getContext('2d');
+
+            // Data for the bar chart
+            const serviceBarData = {
+                labels: data.map(item => item.service),
+                datasets: [{
+                    label: 'Count of E2E Tests',
+                    data: data.map(item => item.count),
+                    backgroundColor: ['#007bff', '#28a745', '#dc3545'], // You can customize colors as needed
+                }],
+            };
+
+            // Create a responsive bar chart with hover interaction
+            new Chart(serviceBarCtx, {
+                type: 'bar',
+                data: serviceBarData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                        },
+                        tooltip: {
+                            enabled: true,
+                        },
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+        })
+        .catch(error => console.error("Error fetching service counts:", error));
+</script>
+
+<!-- Custom CSS for enhanced styling -->
+<style>
+    .chart-container {
+        max-width: 400px;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .chart-interactive {
+        transition: transform 0.3s;
+    }
+    .chart-interactive:hover {
+        transform: scale(1.1);
+    }
+    .chart-label {
+        font-size: 1.2rem;
+        color: #6c757d;
+        animation: fade-in 1s ease-out;
+    }
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

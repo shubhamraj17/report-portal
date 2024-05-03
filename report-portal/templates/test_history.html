@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Test History for Image ID: {{ cloud_provider_image_id }}</h1>
+    
+    <!-- Table to display test history -->
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered table-hover table-striped">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>Operation ID</th>
+                    <th>Operation Name</th>
+                    <th>Status</th>
+                    <th>Started At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for test in test_history %}
+                <tr>
+                    <td>{{ test.id }}</td>
+                    <td>{{ test.operation_name }}</td>
+                    <td>{{ test.status }}</td>
+                    <td>{{ test.started_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
